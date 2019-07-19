@@ -12,6 +12,7 @@ namespace dotnetProxyFunctionApp
 {
     public static class ehProxy
     {
+        static string splunkAddress { get; set; }
         static string splunkCertThumbprint { get; set; }
 
         [FunctionName("ehProxy")]
@@ -19,9 +20,50 @@ namespace dotnetProxyFunctionApp
             [EventHubTrigger("%input-hub-name%", Connection = "hubConnection")] string messages,
             ILogger log)
         {
+            splunkAddress = getEnvironmentVariable("splunkAddress");
             splunkCertThumbprint = getEnvironmentVariable("splunkCertThumbprint");
+            if (splunkAddress.ToLower().StartsWith("https"))
+            {
+                log.LogInformation($"SSL encryption required.");
+
+                try
+                {
+                    if (!DetectCACertificate())
+                    {
+                        log.LogInformation($"No CA cert detected.");
+                        InstallCACertificate();
+                        log.LogInformation($"CA Cert was installed.");
+                    }
+                } catch (Exception ex)
+                {
+                    log.LogError($"Error during certificate operations: {ex.Message}");
+                    throw ex;
+                }
+            }
 
             await obHEC(messages, log);
+        }
+
+        static void InstallCACertificate()
+        {
+            var password = getEnvironmentVariable("CA_PRIVATE_KEY_PASSWORD");
+            var cert = new X509Certificate2(
+                "/home/site/ca-certificates/splunk_cacert.pfx",
+                password,
+                X509KeyStorageFlags.DefaultKeySet);
+
+        }
+
+        static bool DetectCACertificate()
+        {
+            var store = new X509Store("Root", StoreLocation.CurrentUser);
+            store.Open(OpenFlags.ReadOnly);
+            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, splunkCertThumbprint, false);
+            if (certificates.Count == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public class SingleHttpClientInstance
