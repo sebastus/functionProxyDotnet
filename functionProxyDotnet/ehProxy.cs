@@ -27,15 +27,18 @@ namespace dotnetProxyFunctionApp
             splunkCertThumbprint = getEnvironmentVariable("splunkCertThumbprint");
             if (splunkAddress.ToLower().StartsWith("https"))
             {
-                log.LogInformation($"SSL encryption required.");
+                log.LogTrace($"SSL encryption required.");
 
                 try
                 {
                     if (!DetectCACertificate())
                     {
-                        log.LogInformation($"No CA cert detected.");
+                        log.LogTrace($"No CA cert detected.");
                         InstallCACertificate();
-                        log.LogInformation($"CA Cert was installed.");
+                        log.LogTrace($"CA Cert was installed.");
+                    } else
+                    {
+                        log.LogTrace("Certificate is already installed.");
                     }
                 } catch (Exception ex)
                 {
@@ -101,7 +104,7 @@ namespace dotnetProxyFunctionApp
                 }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch))
                 {
-                    myLogger.LogError($"The remote certificate name doesn't match. Ignoring.");
+                    myLogger.LogInformation($"The remote certificate name doesn't match. Ignoring.");
                 }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable))
                 {
