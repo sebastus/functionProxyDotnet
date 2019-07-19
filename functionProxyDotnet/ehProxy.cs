@@ -104,7 +104,7 @@ namespace dotnetProxyFunctionApp
                 }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch))
                 {
-                    myLogger.LogInformation($"The remote certificate name doesn't match. Ignoring.");
+                    myLogger.LogTrace($"The remote certificate name doesn't match. Ignoring.");
                 }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable))
                 {
