@@ -172,7 +172,13 @@ namespace dotnetProxyFunctionApp
             }
             catch (System.Net.Http.HttpRequestException e)
             {
-                throw new System.Net.Http.HttpRequestException($"Sending to Splunk. Is Splunk service running? {e.Message}");
+                var msg = "Error sending to Splunk. \n";
+                msg += e.Message + "\n";
+                if (e.InnerException != null)
+                {
+                    msg += e.InnerException.Message;
+                }
+                throw new System.Net.Http.HttpRequestException(msg);
             }
             catch (Exception f)
             {
