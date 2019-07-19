@@ -80,14 +80,6 @@ namespace dotnetProxyFunctionApp
 
             static SingleHttpClientInstance()
             {
-                //var handler = new SocketsHttpHandler
-                //{
-                //    SslOptions = new SslClientAuthenticationOptions
-                //    {
-                //        RemoteCertificateValidationCallback = ValidateMyCert,
-                //        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12                        
-                //    }
-                //};
                 var handler = new SocketsHttpHandler
                 {
                     SslOptions = new SslClientAuthenticationOptions
@@ -96,29 +88,28 @@ namespace dotnetProxyFunctionApp
                     }
                 };
                 HttpClient = new HttpClient(handler);
-//                HttpClient = new HttpClient();
             }
 
             static bool ValidateMyCert(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors sslErr)
             {
-                if (sslErr == SslPolicyErrors.None) { 
-                    return true;
-                }
+                bool returnValue = true;
 
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
                 {
-                    myLogger.LogError($"There are errors in the remote certificate chain.\n");
+                    myLogger.LogError($"There are errors in the remote certificate chain.");
+                    returnValue = false;
                 }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch))
                 {
-                    myLogger.LogError($"The remote certificate name doesn't match.\n");
+                    myLogger.LogError($"The remote certificate name doesn't match. Ignoring.");
                 }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable))
                 {
-                    myLogger.LogError($"The remote certificate is not available.\n");
+                    myLogger.LogError($"The remote certificate is not available.");
+                    returnValue = false;
                 }
 
-                return false;
+                return returnValue;
             }
 
             public static async Task<HttpResponseMessage> SendToService(HttpRequestMessage req)
