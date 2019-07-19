@@ -52,6 +52,10 @@ namespace dotnetProxyFunctionApp
                 password,
                 X509KeyStorageFlags.DefaultKeySet);
 
+            var store = new X509Store("Root", StoreLocation.CurrentUser);
+            store.Open(OpenFlags.ReadWrite);
+            store.Add(cert);
+            store.Close();
         }
 
         static bool DetectCACertificate()
@@ -59,6 +63,7 @@ namespace dotnetProxyFunctionApp
             var store = new X509Store("Root", StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly);
             var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, splunkCertThumbprint, false);
+            store.Close();
             if (certificates.Count == 0)
             {
                 return false;
