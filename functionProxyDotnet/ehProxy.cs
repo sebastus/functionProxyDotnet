@@ -14,12 +14,15 @@ namespace dotnetProxyFunctionApp
     {
         static string splunkAddress { get; set; }
         static string splunkCertThumbprint { get; set; }
+        static ILogger myLogger { get; set; }
 
         [FunctionName("ehProxy")]
         public static async Task Run(
             [EventHubTrigger("%input-hub-name%", Connection = "hubConnection")] string messages,
             ILogger log)
         {
+            myLogger = log;
+
             splunkAddress = getEnvironmentVariable("splunkAddress");
             splunkCertThumbprint = getEnvironmentVariable("splunkCertThumbprint");
             if (splunkAddress.ToLower().StartsWith("https"))
@@ -48,7 +51,7 @@ namespace dotnetProxyFunctionApp
         {
             var password = getEnvironmentVariable("CA_PRIVATE_KEY_PASSWORD");
             var cert = new X509Certificate2(
-                "/home/site/ca-certificates/splunk_cacert.pfx",
+                getCertFilename("splunk_cacert.pfx"),
                 password,
                 X509KeyStorageFlags.DefaultKeySet);
 
@@ -85,9 +88,37 @@ namespace dotnetProxyFunctionApp
                 //        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12                        
                 //    }
                 //};
+                var handler = new SocketsHttpHandler
+                {
+                    SslOptions = new SslClientAuthenticationOptions
+                    {
+                        RemoteCertificateValidationCallback = ValidateMyCert
+                    }
+                };
+                HttpClient = new HttpClient(handler);
+//                HttpClient = new HttpClient();
+            }
 
-//                HttpClient = new HttpClient(handler);
-                HttpClient = new HttpClient();
+            static bool ValidateMyCert(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors sslErr)
+            {
+                if (sslErr == SslPolicyErrors.None) { 
+                    return true;
+                }
+
+                if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                {
+                    myLogger.LogError($"There are errors in the remote certificate chain.\n");
+                }
+                if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch))
+                {
+                    myLogger.LogError($"The remote certificate name doesn't match.\n");
+                }
+                if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable))
+                {
+                    myLogger.LogError($"The remote certificate is not available.\n");
+                }
+
+                return false;
             }
 
             public static async Task<HttpResponseMessage> SendToService(HttpRequestMessage req)
@@ -97,18 +128,18 @@ namespace dotnetProxyFunctionApp
             }
         }
 
-        public static string getFilename(string basename)
+        public static string getCertFilename(string basename)
         {
 
             var filename = "";
             var home = getEnvironmentVariable("HOME");
             if (home.Length == 0)
             {
-                filename = "../../../" + basename;
+                filename = "../../../ssl/" + basename;
             }
             else
             {
-                filename = home + "\\site\\wwwroot\\" + basename;
+                filename = home + "/site/ca-certificates/" + basename;
             }
             return filename;
         }
