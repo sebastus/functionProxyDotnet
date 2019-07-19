@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetProxyFunctionApp", "dotnetProxyFunctionApp.csproj", "{46BCC963-7FED-4F31-B4DC-427E4A8AB3C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetProxyFunctionApp", "functionProxyDotnet\dotnetProxyFunctionApp.csproj", "{675E6FA4-5B42-48DA-B3A0-32FE12D40C04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-certificate-tool", "dotnet-certificate-tool\dotnet-certificate-tool.csproj", "{8BD15BD6-0332-40E6-9740-D3E9B423E0B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{46BCC963-7FED-4F31-B4DC-427E4A8AB3C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46BCC963-7FED-4F31-B4DC-427E4A8AB3C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46BCC963-7FED-4F31-B4DC-427E4A8AB3C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46BCC963-7FED-4F31-B4DC-427E4A8AB3C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675E6FA4-5B42-48DA-B3A0-32FE12D40C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675E6FA4-5B42-48DA-B3A0-32FE12D40C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675E6FA4-5B42-48DA-B3A0-32FE12D40C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675E6FA4-5B42-48DA-B3A0-32FE12D40C04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BD15BD6-0332-40E6-9740-D3E9B423E0B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BD15BD6-0332-40E6-9740-D3E9B423E0B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BD15BD6-0332-40E6-9740-D3E9B423E0B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BD15BD6-0332-40E6-9740-D3E9B423E0B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

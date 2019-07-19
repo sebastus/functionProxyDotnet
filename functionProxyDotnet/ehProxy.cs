@@ -30,16 +30,17 @@ namespace dotnetProxyFunctionApp
 
             static SingleHttpClientInstance()
             {
-                var handler = new SocketsHttpHandler
-                {
-                    SslOptions = new SslClientAuthenticationOptions
-                    {
-                        RemoteCertificateValidationCallback = ValidateMyCert,
-                        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12                        
-                    }
-                };
+                //var handler = new SocketsHttpHandler
+                //{
+                //    SslOptions = new SslClientAuthenticationOptions
+                //    {
+                //        RemoteCertificateValidationCallback = ValidateMyCert,
+                //        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12                        
+                //    }
+                //};
 
-                HttpClient = new HttpClient(handler);
+//                HttpClient = new HttpClient(handler);
+                HttpClient = new HttpClient();
             }
 
             public static async Task<HttpResponseMessage> SendToService(HttpRequestMessage req)
@@ -65,22 +66,22 @@ namespace dotnetProxyFunctionApp
             return filename;
         }
         
-        public static bool ValidateMyCert(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors sslErr)
-        {
-            // if user has not configured a cert, anything goes
-            if (string.IsNullOrWhiteSpace(splunkCertThumbprint))
-                return true;
+        // public static bool ValidateMyCert(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors sslErr)
+        // {
+        //     // if user has not configured a cert, anything goes
+        //     if (string.IsNullOrWhiteSpace(splunkCertThumbprint))
+        //         return true;
 
-            // if user has configured a cert, must match
-            var numcerts = chain.ChainElements.Count;
-            var cacert = chain.ChainElements[numcerts - 1].Certificate;
+        //     // if user has configured a cert, must match
+        //     var numcerts = chain.ChainElements.Count;
+        //     var cacert = chain.ChainElements[numcerts - 1].Certificate;
 
-            var thumbprint = cacert.GetCertHashString().ToLower();
-            if (thumbprint == splunkCertThumbprint)
-                return true;
+        //     var thumbprint = cacert.GetCertHashString().ToLower();
+        //     if (thumbprint == splunkCertThumbprint)
+        //         return true;
 
-            return false;
-        }
+        //     return false;
+        // }
 
         public static string getEnvironmentVariable(string name)
         {

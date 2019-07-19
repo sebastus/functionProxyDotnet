@@ -1,0 +1,6 @@
+﻿version: "3.7"
+services:
+  proxy:
+    build: .
+    image: sebastus/splunkproxyfunction:v1.0.6
+
