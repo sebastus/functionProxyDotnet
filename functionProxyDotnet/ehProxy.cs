@@ -52,8 +52,8 @@ namespace dotnetProxyFunctionApp
 
         static void InstallCACertificate()
         {
-            var caCertFilename = getEnvironmentVariable("CA_CERT_FILENAME");
-            var password = getEnvironmentVariable("CA_PRIVATE_KEY_PASSWORD");
+            var caCertFilename = getEnvironmentVariable("CA_CERT_FILENAME", "splunk_cacert.pfx");
+            var password = getEnvironmentVariable("CA_PRIVATE_KEY_PASSWORD", "password");
             var cert = new X509Certificate2(
                 getCertFilename(caCertFilename),
                 password,
@@ -109,7 +109,7 @@ namespace dotnetProxyFunctionApp
                     returnValue = false;
                 }
 
-                var caCertSubjectName = getEnvironmentVariable("CA_CERT_SUBJECTNAME");
+                var caCertCommonName = getEnvironmentVariable("CA_CERT_COMMONNAME", "SplunkServerDefaultCert");
                 var subjectName = chain.ChainElements[0].Certificate.SubjectName.Name;
                 //subjectName = "O=SplunkUser, CN=SplunkServerDefaultCert"
 
@@ -125,7 +125,7 @@ namespace dotnetProxyFunctionApp
 
                 myLogger.LogTrace($"commonName = {cn}");
                  
-                if (cn != caCertSubjectName)
+                if (cn != caCertCommonName)
                 {
                     returnValue = false;
                 }
@@ -156,11 +156,11 @@ namespace dotnetProxyFunctionApp
             return filename;
         }
 
-        public static string getEnvironmentVariable(string name)
+        public static string getEnvironmentVariable(string name, string defaultValue = "")
         {
             var result = System.Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
             if (result == null)
-                return "";
+                return defaultValue;
 
             return result;
         }
