@@ -111,6 +111,7 @@ namespace dotnetProxyFunctionApp
 
                 var caCertSubjectName = getEnvironmentVariable("CA_CERT_SUBJECTNAME");
                 var subjectName = chain.ChainElements[0].Certificate.SubjectName.Name;
+                //subjectName = "O=SplunkUser, CN=SplunkServerDefaultCert"
 
                 string[] subjectNameParts = subjectName.Split(',');
                 string cn = "";
@@ -122,8 +123,7 @@ namespace dotnetProxyFunctionApp
                     }
                 }
 
-                myLogger.LogInformation($"commonName = {cn}");
-                //subjectName = O=SplunkUser, CN=SplunkServerDefaultCert
+                myLogger.LogTrace($"commonName = {cn}");
                  
                 if (cn != caCertSubjectName)
                 {
