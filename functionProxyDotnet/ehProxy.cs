@@ -52,9 +52,10 @@ namespace dotnetProxyFunctionApp
 
         static void InstallCACertificate()
         {
+            var caCertFilename = getEnvironmentVariable("CA_CERT_FILENAME");
             var password = getEnvironmentVariable("CA_PRIVATE_KEY_PASSWORD");
             var cert = new X509Certificate2(
-                getCertFilename("splunk_cacert.pfx"),
+                getCertFilename(caCertFilename),
                 password,
                 X509KeyStorageFlags.DefaultKeySet);
 
