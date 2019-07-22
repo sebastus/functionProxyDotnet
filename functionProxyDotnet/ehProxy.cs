@@ -103,13 +103,19 @@ namespace dotnetProxyFunctionApp
                     myLogger.LogError($"There are errors in the remote certificate chain.");
                     returnValue = false;
                 }
-                if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch))
-                {
-                    myLogger.LogTrace($"The remote certificate name doesn't match. Ignoring.");
-                }
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable))
                 {
                     myLogger.LogError($"The remote certificate is not available.");
+                    returnValue = false;
+                }
+
+                var caCertSubjectName = getEnvironmentVariable("CA_CERT_SUBJECTNAME");
+                var subjectName = chain.ChainElements[0].Certificate.SubjectName.ToString();
+
+                myLogger.LogInformation($"subjectName = {subjectName}");
+
+                if (subjectName != caCertSubjectName)
+                {
                     returnValue = false;
                 }
 
