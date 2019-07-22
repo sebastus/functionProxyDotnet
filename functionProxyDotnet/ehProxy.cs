@@ -110,7 +110,7 @@ namespace dotnetProxyFunctionApp
                 }
 
                 var caCertSubjectName = getEnvironmentVariable("CA_CERT_SUBJECTNAME");
-                var subjectName = chain.ChainElements[0].Certificate.SubjectName.ToString();
+                var subjectName = chain.ChainElements[0].Certificate.SubjectName.Name;
 
                 myLogger.LogInformation($"subjectName = {subjectName}");
 
