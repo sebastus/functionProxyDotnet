@@ -33,3 +33,10 @@ The provided pfx was created with this command:
 
 The private key password for splunk_cacert_key.pem is 'password'.
 
+## Installation  
+
+The happy path for installation is:  
+
+`docker build --tag whatever/splunkproxyfunction:vsomething .`  
+
+The first 5 of the environment variables must be specified in the Dockerfile. The last 5 should be specified in the docker run or Kubernetes secrets.  
