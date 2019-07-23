@@ -4,6 +4,8 @@ The generalized architecture for Splunk includes a cluster of indexers. If using
 
 ![Architecture](images/Splunk-with-Proxy-Function.png)
 
+In the diagram, "Activity Log" represents the various data sources that [Azure Function for Splunk](https://github.com/microsoft/AzureFunctionforSplunkVS) can ingest. That function can be configured to emit to an event hub which triggers this proxy function, and which in turn emits to Splunk.  
+
 ## Configuration Details
 
 Environment Variables
