@@ -98,6 +98,11 @@ namespace dotnetProxyFunctionApp
             {
                 bool returnValue = true;
 
+                if (!splunkAddress.ToLower().StartsWith("https"))
+                {
+                    return true;
+                }
+
                 if (sslErr.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
                 {
                     myLogger.LogError($"There are errors in the remote certificate chain.");
